@@ -6,11 +6,11 @@
 # Telling the child where the parent is
 rm(list=ls())
 library(knitr)
-set_parent('./parent07.Rnw')  # ./ it will look in same folder
+set_parent('./parent.Rnw')  # ./ it will look in same folder
 @
 %---------------------------------------
 
-\Sexpr{knit_child('child-stats07.Rnw')}
+\Sexpr{knit_child('child-stats.Rnw')}
 
 \clearpage
 \renewcommand{\contentsname}{\bf Contents}

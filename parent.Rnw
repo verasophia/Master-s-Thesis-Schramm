@@ -25,7 +25,7 @@
 
 \begin{document}
 
-\Sexpr{knit_child('child-latex07.Rnw')}
+\Sexpr{knit_child('child-latex.Rnw')}
 
 <<biber, eval=TRUE, echo=FALSE, results='hide'>>=
 system(paste("biber", sub("\\.Rnw$", "", current_input())))

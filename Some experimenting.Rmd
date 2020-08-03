@@ -1,177 +1,35 @@
-%-------------------------------------
-<<parent1, echo=FALSE, cache=FALSE>>=
-#knitr::opts_chunk$set(comment=NA)
-knitr::opts_chunk$set(comment=NA)
-rm(list=ls())
-set.seed(132435)
-library(knitr)
-set_parent('./parent.Rnw')
-@
+---
+title: "Examples"
+author: "VS"
+date: "3 8 2020"
+output: html_document
+---
 
-<<mystats1, echo=FALSE, error=FALSE, message=FALSE, results='asis', warning=FALSE, cache=FALSE, outodep=TRUE>>=
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#PREAMBLE: Several packages
-#Here we are loading all the necessary libraries, chicking that we are on the correct OS
-# Load necessary libraries:
-# library(reshape)
-# First three packages used to be in first chunk...
-library(tidyverse)
-library(plm)       # Panel data analysis library
-library(reshape2)
-library(lme4)
-library(Matrix)
-library(plyr)
-library(ggplot2)
-library(xtable)
-library(tidyverse)
-library(plm)
-library(stargazer)
-# library(doBy)
-#==============================
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-#==============================================
-#Set up working directory: +++ MAKE SURE THE CORRECT DIRECTORY IS BEING USED ***
-setwd('C:/Users/vera/Documents/Uni/2 Master EOEP/5. Masterarbeit/08_Git/Master-s-Thesis-Schramm')
-cur.wd = getwd()
-#==============================================
+## R Markdown
 
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-class.size <- 30 # number of students in each class
-student.id <- seq(1:class.size)
-class.id <- seq(1:2)
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-wave <- seq(1:2) - 1
+```{r cars}
+summary(cars)
+```
 
-d <- expand.grid(wave = wave, student.id = student.id, class.id = class.id)
+## Including Plots
 
-rm(wave, class.id, student.id)
+You can also embed plots, for example:
 
-#---------------------------------
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
 
-d$treated <- ifelse( d$class.id==1, 1, 0)
-df <- unique(d[c("student.id", "class.id")]) # creates new data sheet with those two variables from first data sheet
-df <- df %>% mutate(ustudent.id = 1:60) %>%
-#mutate() adds new variables and preserves existing ones
-    select(ustudent.id, everything()) #student ID für jeden einzelnen Schüler unabhängig von der Klasse
-df$student.effect <- rnorm(nrow(df), mean=0, sd=1)
-d <- left_join(d, df, by=c("class.id", "student.id")) # joining two tbls together
-# head(d)
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-#-------------------------------------
-### The outcomes are determined by the following data generating process ###
-
-teffect <- 1 # treatment effect
-wave.effects <- -1 # wave effects
-class.effect <- 2
-cons <- 0
-d$y <- cons + class.effect*d$treated + 
-              wave.effects*d$wave + 
-              teffect*(d$treated*d$wave) +
-              d$student.effect +
-              rnorm(nrow(d), mean=0, sd=1)
-
-#-------------------------------
-### DD ###
-
-y00 <- mean( d$y[(d$treated==0 & d$wave==0)] )
-y10 <- mean( d$y[(d$treated==1 & d$wave==0)] )
-y01 <- mean( d$y[(d$treated==0 & d$wave==1)] )
-y11 <- mean( d$y[(d$treated==1 & d$wave==1)] )
-
-cat(paste('\\newcommand{\\one}{\n', sep=''))
-(y11 - y10) - (y01- y00)
-cat(paste('}\n'))
-
-
-y02 <- mean( d$y[(d$treated==0 & d$wave==2)] )
-y12 <- mean( d$y[(d$treated==1 & d$wave==2)] )
-
-cat(paste('\\newcommand{\\two}{\n', sep=''))
-(y12 - y10) - (y02- y00)
-cat(paste('}\n'))
-
-y03 <- mean( d$y[(d$treated==0 & d$wave==3)] )
-y13 <- mean( d$y[(d$treated==1 & d$wave==3)] )
-
-cat(paste('\\newcommand{\\three}{\n', sep=''))
-(y13 - y10) - (y03- y00)
-cat(paste('}\n'))
-
-
-y04 <- mean( d$y[(d$treated==0 & d$wave==4)] )
-y14 <- mean( d$y[(d$treated==1 & d$wave==4)] )
-
-cat(paste('\\newcommand{\\four}{\n', sep=''))
-(y14 - y10) - (y04- y00)
-cat(paste('}\n'))
-
-
-#----------------------------------------
-### DD regression ###
-d.p <- pdata.frame(d, index = c("ustudent.id", "wave"))
-
-
-## OLS ##
-
-ols <- lm( y ~ treated + wave + treated*wave, data = d)
-
-cat(paste('\\newcommand{\\ols}{\n', sep=''))
-stargazer(ols,
-          title = "OLS regression results",
-          align = F,
-          header = T,
-          notes = "",
-          label = "tab:ols",
-          dep.var.labels.include = F,
-          single.row = T,
-          dep.var.caption = "Dependent variable:")
-cat(paste('}\n'))
-
-# diff <- plm(diff(y, 4) ~ diff(treated, 4), d.p, model = "pooling")
-
-## Fixed effects DD regression ##
-
-
-fe <- plm( y ~  wave + treated*wave, data = d.p, model = "within")
-head(fixef(fe))
-head(fixef(fe, type = "dfirst"))
-head(fixef(fe, type = "dmean"))
-FE <- fixef(fe)
-ind.eff <- expand.grid(FE)
-ind.eff <- ind.eff %>% mutate(ustudent.id = 1:60) %>%
-  select(ustudent.id, everything())
-d <- left_join(d, ind.eff)
-# left_join(d, fixef(fe))
-
-cat(paste('\\newcommand{\\fe}{\n', sep=''))
-stargazer(fe,
-          title = "Fixed Effects",
-          align = F,
-          header = T,
-          notes = "",
-          label = "tab:fe",
-          dep.var.labels.include = F,
-          single.row = T,
-          dep.var.caption = "Dependent variable:")
-cat(paste('}\n'))
-
-
-## Random effects DD regression ##
-
-re <- plm( y ~ treated + wave + treated*wave, data = d, model = "within", index = "ustudent.id")
-
-cat(paste('\\newcommand{\\re}{\n', sep=''))
-stargazer(re,
-          title = "Random Effects",
-          align = F,
-          header = T,
-          notes = "",
-          label = "tab:re",
-          dep.var.labels.include = F,
-          single.row = T,
-          dep.var.caption = "Dependent variable:")
-cat(paste('}\n'))
-
+```{r pressure, echo=FALSE}
 # Stargazer: Several possibilites are offered by the library to improve the appearance of the table:
 
 ## the - omit - argument is used to omit two sets of cefficients correspoinding to the region and sector factors, - omit.labels - indicates how the information about these covariates will be in cluded in the table,
@@ -188,11 +46,6 @@ cat(paste('}\n'))
 # stargazer(fe, re, column.sep.width = "-15pt", align=T, single.row = T)
 
 # For stargazer: Might be nixe to have Title in Capital Letteres and some notes, describing what's in parantheses
-
-@
-
-
-<<mystats2, echo=FALSE, error=FALSE, message=FALSE, results='hide', warning=FALSE, cache=FALSE, outodep=TRUE, comment="">>=
 
 ### JUST SOME EXPERIMENTING WITH PANEL DATA ###
 
@@ -455,5 +308,7 @@ ercomp(democracy ̃ lag(income), DI)
 
 # devtools::session_info()
 
-@
+
+```
+
 
