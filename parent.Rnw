@@ -1,0 +1,34 @@
+% R no web extention
+% Insert chunk: Cnt+Alt+I
+% Cntr+"klick" in code - jumps to specific point in PDF
+% Doubleklick in PDF - jumps to specific line in code
+% F1 help
+
+% Preamble to the entire project
+\documentclass{article}
+\usepackage{dcolumn}
+\usepackage[top=2.5cm,left=2.5cm,right=2.5cm,bottom=3cm,headheight=1.5cm,headsep=1cm,footnotesep=1cm]{geometry}%
+\usepackage{url}
+\renewcommand{\UrlFont}{\small\tt}
+\input{head.tex}
+\usepackage{csquotes}
+\usepackage[style=apa,
+            backend=biber,
+            maxcitenames=1,
+            maxcitenames=2,
+            uniquelist=true]{biblatex}
+\DeclareLanguageMapping{english}{english-apa}
+\addbibresource{masterarbeit.bib}
+\title{first draft}
+\author{Vera}
+\date{}
+
+\begin{document}
+
+\Sexpr{knit_child('child-latex07.Rnw')}
+
+<<biber, eval=TRUE, echo=FALSE, results='hide'>>=
+system(paste("biber", sub("\\.Rnw$", "", current_input())))
+@
+
+\end{document}
