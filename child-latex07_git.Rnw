@@ -1,0 +1,52 @@
+% CHILD iwth LaTeX code only:
+
+%--------------------------------------
+
+<<parent, echo=FALSE, cache=FALSE>>=
+# Telling the child where the parent is
+rm(list=ls())
+library(knitr)
+set_parent('./parent07.Rnw')  # ./ it will look in same folder
+@
+%---------------------------------------
+
+\Sexpr{knit_child('child-stats07.Rnw')}
+
+\clearpage
+\renewcommand{\contentsname}{\bf Contents}
+\tableofcontents
+\newpage
+
+\section{Erste Regressionstabellen}
+\label{sec:tabellen}
+
+Dies sind die DD Ergebnisse:
+
+DiD Wave 0-1: 
+\one \\
+DiD Wave 0-2: 
+\two \\
+DiD Wave 0-3: 
+\three \\
+DiD Wave 0-4: 
+\four \\
+
+\diff
+
+\ols
+
+\fe
+
+\re
+
+
+
+%% References 
+\clearpage
+\addcontentsline{toc}{section}{References}
+\singlespacing
+\setlength\bibitemsep{2\itemsep}
+\printbibliography
+
+% You can see the OLS results in Table \ref{tab:ols}.
+% Table \ref{tab.fe} shows the fe results.
