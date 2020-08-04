@@ -46,7 +46,7 @@ student.id <- seq(1:class.size)
 class.id <- seq(1:2)
 
 
-wave <- seq(1:2) - 1
+wave <- seq(1:5) - 1
 
 d <- expand.grid(wave = wave, student.id = student.id, class.id = class.id)
 
@@ -187,25 +187,45 @@ cat(paste('}\n'))
 ############# Klasse im Puls Datensatz ###########
 ##################################################
 
+KIP <- read_dta("master_kip+netwerk_Stata12.dta")
+kipols <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP)
+
+
+# For school1
+
+kipols1 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==1)
+
+
+# For school2
+
+kipols2 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==2)
+
+
+#For school3
+
+kipols3 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==3)
+
+
+#For school4
+
+kipols4 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==4)
+
+
+#For school5
+
+kipols5 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==5)
+
+
+#For school6
+
+kipols6 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==6)
 
 
 
-
-
-# str(KIP)
-# names(KIP)
-
-# ggplot(data = KIP, aes(x=Treatment, y=v07a))
-# sp <- ggplot(data = KIP, aes(x=Treatment*welle, y=v07a))
-# sp + geom_point()
-
-
-
-## coef(re)
-
-# names(KIP)
-
-
+cat(paste('\\newcommand{\\allschools}{\n', sep=''))
+stargazer(sapply(list(all = kipols, school1 = kipols1, school2 = kipols2, school3 = kipols3, school4 = kipols4, school5 = kipols5, school6 = kipols6),
+       function(x) coef(summary(x))["Treatment", c("Estimate", "Std. Error")]))
+cat(paste('}\n'))
 
 
 

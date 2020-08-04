@@ -20,9 +20,7 @@ set_parent('./parent.Rnw')  # ./ it will look in same folder
 \section{Erste Regressionstabellen}
 \label{sec:tabellen}
 
-This is a citation 
-
-Dies sind die DD Ergebnisse:
+Results of the Simulation:
 
 DiD Wave 0-1: 
 \one \\
@@ -40,6 +38,7 @@ DiD Wave 0-4:
 
 \re
 
+\allschools
 
 
 %% References 
@@ -49,6 +48,6 @@ DiD Wave 0-4:
 \setlength\bibitemsep{2\itemsep}
 \printbibliography
 
-@
+
 % You can see the OLS results in Table \ref{tab:ols}.
 % Table \ref{tab.fe} shows the fe results.
