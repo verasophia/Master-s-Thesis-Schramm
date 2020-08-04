@@ -24,7 +24,6 @@ library(plyr)
 library(ggplot2)
 library(xtable)
 library(tidyverse)
-library(plm)
 library(stargazer)
 library(haven)
 # library(doBy)
@@ -55,7 +54,7 @@ rm(wave, class.id, student.id)
 
 #---------------------------------
 
-d$treated <- ifelse( d$class.id==1, 1, 0)
+d$treated <- ifelse(d$class.id==1, 1, 0)
 df <- unique(d[c("student.id", "class.id")]) # creates new data sheet with those two variables from first data sheet
 df <- df %>% mutate(ustudent.id = 1:nrow(df)) %>%
 #mutate() adds new variables and preserves existing ones
@@ -140,8 +139,8 @@ cat(paste('}\n'))
 ## Fixed effects DD regression ##
 
 
-fe <- plm( y ~   y ~ treated + wave + treated*wave, data = d.p, model = "within")
-coef(fe)
+fe <- plm( y ~  wave + treated*wave, data = d.p, model = "within")
+# coef(fe)
 # head(fixef(fe))
 # head(fixef(fe, type = "dfirst"))
 # head(fixef(fe, type = "dmean"))
@@ -167,8 +166,8 @@ cat(paste('}\n'))
 
 ## Random effects DD regression ##
 
-re <- plm( y ~ treated + wave + treated*wave, data = d.p, model = "random")
-coef(re)
+re <- plm(y ~ treated + wave + treated*wave, data = d.p, model = "random")
+# coef(re)
 
 cat(paste('\\newcommand{\\re}{\n', sep=''))
 stargazer(re,
@@ -182,8 +181,6 @@ stargazer(re,
           dep.var.caption = "Dependent variable:")
 cat(paste('}\n'))
 
-ggplot(d.p, aes(treated, y)) + geom_point()
-
 
 
 ##################################################
@@ -192,32 +189,25 @@ ggplot(d.p, aes(treated, y)) + geom_point()
 
 
 
-KIP <- read_dta("./master_kip+netwerk_Stata12.dta")
-
-KIP$treat <- NULL
-str(KIP)
-names(KIP)
-
-
-pKIP <- pdata.frame(KIP, index = c("pid", "welle"))
-
-ols <- lm( v07a ~ Treatment + welle + Treatment*welle, KIP)
-coef(ols)
-
-pool <- plm( v07a ~ Treatment + welle + Treatment*welle, pKIP, model = "pooling")
-coef(pool)
-fe <- plm( v07a ~ Treatment + welle + Treatment*welle, pKIP, model = "within")
-coef(fe)
-
-re <- plm( v07a ~ Treatment + welle + Treatment*welle, pKIP, model = "random", random.method = "swar")
-coef(re)
-
-names(KIP)
-
-KIP$treat <- NULL
 
 
 
-head(KIP)
+# str(KIP)
+# names(KIP)
+
+# ggplot(data = KIP, aes(x=Treatment, y=v07a))
+# sp <- ggplot(data = KIP, aes(x=Treatment*welle, y=v07a))
+# sp + geom_point()
+
+
+
+## coef(re)
+
+# names(KIP)
+
+
+
+
+
 @
 
