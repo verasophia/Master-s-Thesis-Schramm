@@ -224,10 +224,18 @@ kipols6 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==6)
 
 cat(paste('\\newcommand{\\allschools}{\n', sep=''))
 stargazer(sapply(list(all = kipols, school1 = kipols1, school2 = kipols2, school3 = kipols3, school4 = kipols4, school5 = kipols5, school6 = kipols6),
-       function(x) coef(summary(x))["Treatment", c("Estimate", "Std. Error")]))
+       function(x) coef(summary(x))["Treatment", c("Estimate", "Std. Error")]), )
 cat(paste('}\n'))
 
+sp <- ggplot(data = KIP, aes(x=welle, y=v07a), subset(Treatement==1))
 
+
+sp + geom_point()
+sp <- sp + geom_point()
+
+sp+ ggtitle("my first scatterplot") + stat_smooth(lm)
+
+hist(v071a)
 
 @
 
