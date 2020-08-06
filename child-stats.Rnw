@@ -45,7 +45,6 @@ class.size <- 30 # number of students in each class
 student.id <- seq(1:class.size)
 class.id <- seq(1:12)
 
-
 wave <- seq(1:5) - 1
 
 d <- expand.grid(wave = wave, student.id = student.id, class.id = class.id)
@@ -128,25 +127,14 @@ d.p <- pdata.frame(d, index = c("ustudent.id", "wave"))
 
 ## OLS ##
 
-for(c in unique(d$school.id)) {
-  OLS <- lm(y ~ treated + wave + treated*wave, data = d, subset = school.id == c)
-}
-coef(OLS)
-
 ols <- lm( y ~ treated + wave + treated*wave, data = d)
-coef(ols)
 ols1 <- lm( y ~ treated + wave + treated*wave, data = d, subset = school.id==1)
-coef(ols1)
 ols2 <- lm( y ~ treated + wave + treated*wave, data = d, subset = school.id==2)
-coef(ols2)
 ols3 <- lm( y ~ treated + wave + treated*wave, data = d, subset = school.id==3)
-coef(ols3)
 ols4 <- lm( y ~ treated + wave + treated*wave, data = d, subset = school.id==4)
-coef(ols4)
 ols5 <- lm( y ~ treated + wave + treated*wave, data = d, subset = school.id==5)
-coef(ols5)
 ols6 <- lm( y ~ treated + wave + treated*wave, data = d, subset = school.id==6)
-coef(ols6)
+
 
 cat(paste('\\newcommand{\\ols}{\n', sep=''))
 stargazer(ols, ols1, ols2, ols3, ols4, ols5, ols6,
@@ -163,23 +151,6 @@ stargazer(ols, ols1, ols2, ols3, ols4, ols5, ols6,
 cat(paste('}\n'))
 
 
-
-
-
-# cat(paste('\\newcommand{\\ols}{\n', sep=''))
-# stargazer(ols,
-#         title = "OLS regression results",
-#          align = F,
-#          header = T,
-#          notes = "",
-#          label = "tab:ols",
-#          dep.var.labels.include = F,
-#          single.row = T,
-#          dep.var.caption = "Dependent variable:")
-#cat(paste('}\n'))
-
-# diff <- plm(diff(y, 4) ~ diff(treated, 4), d.p, model = "pooling")
-
 ## Fixed effects DD regression ##
 
 
@@ -191,16 +162,6 @@ fe4 <- plm( y ~  wave + treated*wave, data = d.p, model = "within", subset = sch
 fe5 <- plm( y ~  wave + treated*wave, data = d.p, model = "within", subset = school.id==5)
 fe6 <- plm( y ~  wave + treated*wave, data = d.p, model = "within", subset = school.id==6)
 
-
-# head(fixef(fe))
-# head(fixef(fe, type = "dfirst"))
-# head(fixef(fe, type = "dmean"))
-# FE <- fixef(fe)
-# ind.eff <- expand.grid(FE)
-# ind.eff <- ind.eff %>% mutate(ustudent.id = 1:60) %>%
-#   select(ustudent.id, everything())
-# d <- left_join(d, ind.eff)
-# left_join(d, fixef(fe))
 
 cat(paste('\\newcommand{\\fe}{\n', sep=''))
 stargazer(fe,
@@ -224,7 +185,7 @@ re3 <- plm(y ~ treated + wave + treated*wave, data = d.p, model = "random", subs
 re4 <- plm(y ~ treated + wave + treated*wave, data = d.p, model = "random", subset = school.id==4)
 re5 <- plm(y ~ treated + wave + treated*wave, data = d.p, model = "random", subset = school.id==5)
 re6 <- plm(y ~ treated + wave + treated*wave, data = d.p, model = "random", subset = school.id==6)
-# coef(re)
+
 
 cat(paste('\\newcommand{\\re}{\n', sep=''))
 stargazer(re,
@@ -244,71 +205,16 @@ stargazer(OLS = ols, FE=fe, RE=re,
           align = F,
           header = T,
           notes = "",
-          label = "tab:re",
+          label = "tab:all",
           dep.var.labels.include = F,
           single.row = T,
           dep.var.caption = "Dependent variable:")
 cat(paste('}\n'))
 
-summary(ols)
-
-
 
 ##################################################
 ############# Klasse im Puls Datensatz ###########
 ##################################################
-
-KIP <- read_dta("master_kip+netwerk_Stata12.dta")
-kipols <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP)
-
-
-
-
-# For school1
-
-kipols1 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==1)
-
-
-# For school2
-
-kipols2 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==2)
-
-
-#For school3
-
-kipols3 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==3)
-
-
-#For school4
-
-kipols4 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==4)
-
-
-#For school5
-
-kipols5 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==5)
-
-
-#For school6
-
-kipols6 <- lm(v07a ~ welle + pupil + v01a + Treatment, KIP, subset = school==6)
-
-
-
-# cat(paste('\\newcommand{\\allschools}{\n', sep=''))
-# stargazer(sapply(list(all = kipols, school1 = kipols1, school2 = kipols2, school3 = kipols3, school4 = kipols4, school5 = kipols5, school6 = kipols6),
-#        function(x) coef(summary(x))["Treatment", c("Estimate", "Std. Error")]), )
-# cat(paste('}\n'))
-
-# sp <- ggplot(data = KIP, aes(x=welle, y=v07a), subset(Treatement==1))
-
-
-# sp + geom_point()
-# sp <- sp + geom_point()
-
-# sp+ ggtitle("my first scatterplot") + stat_smooth(lm)
-
-# hist(v071a)
 
 @
 

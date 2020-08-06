@@ -7,7 +7,7 @@
 % Preamble to the entire project
 \documentclass{article}
 \usepackage{dcolumn}
-\usepackage[top=2.5cm,left=2.5cm,right=2.5cm,bottom=3cm,headheight=1.5cm,headsep=1cm,footnotesep=1cm]{geometry}%
+\usepackage[top=2.5cm,left=2.5cm,right=2.5cm,bottom=3cm,headheight=1.5cm,headsep=1cm,footnotesep=1cm]{geometry}
 \usepackage{url}
 \renewcommand{\UrlFont}{\small\tt}
 \input{head.tex}

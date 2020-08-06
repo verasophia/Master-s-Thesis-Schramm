@@ -17,10 +17,13 @@ set_parent('./parent.Rnw')  # ./ it will look in same folder
 \tableofcontents
 \newpage
 
+
+
 \section{Erste Regressionstabellen}
 \label{sec:tabellen}
 
 Results of the Simulation:
+\cite{Bender1997}
 
 DiD Wave 0-1: 
 \one \\
