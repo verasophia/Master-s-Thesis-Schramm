@@ -5,7 +5,7 @@
 % F1 help
 
 % Preamble to the entire project
-\documentclass{article}
+\documentclass[a4paper,12pt]{article}
 \usepackage{dcolumn}
 \usepackage[top=2.5cm,left=2.5cm,right=2.5cm,bottom=3cm,headheight=1.5cm,headsep=1cm,footnotesep=1cm]{geometry}
 \usepackage{url}
@@ -17,18 +17,20 @@
             maxcitenames=1,
             maxcitenames=2,
             uniquelist=true]{biblatex}
+            
 \DeclareLanguageMapping{english}{english-apa}
 \addbibresource{masterarbeit.bib}
-\title{first draft}
-\author{Vera}
-\date{}
+\title{
+"The effects of music education on students' well-being. Empirical evidence from a field experiment"
+}
+\author{\textbf{Vera Sophia Schramm} \\ 214215076 \\ \& \\ 
+\\ \vspace{1cm}
+Supervised by: Prof. Dr. Wunder \\ Chair of Econometrics
+}
+\date{November 11th, 2020}
 
 \begin{document}
 
 \Sexpr{knit_child('child-latex.Rnw')}
-
-<<biber, eval=TRUE, echo=FALSE, results='hide'>>=
-system(paste("biber", sub("\\.Rnw$", "", current_input())))
-@
 
 \end{document}
