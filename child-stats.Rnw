@@ -311,5 +311,17 @@ ggarrange(plot1, plot2, plot3, plot4, plot5, plot6,
                     labels = c("1", "2", "3", "4", "5", "6"),
                     ncol = 3, nrow = 2)
 cat(paste('}\n'))
+
+# Standardized mean differences
+vars <- c("lsat","female", "sat.friends", "sat.class", "classsit.prob", "classsit.excl", "note.deu", "note.mat", "note.mus")
+tableone <- CreateTableOne(vars = vars, strata = "treated", data = welle1, test = FALSE, includeNA = F)
+smd <- print(tableone, smd = TRUE)
+kable(smd, format="latex")
+
+cat(paste('\\newcommand{\\smd}{\n', sep=''))
+kable(smd, format="latex",
+cat(paste('}\n'))
+
+# print(smd, smd = TRUE)
 @
 
