@@ -241,16 +241,27 @@ names(KIP)[names(KIP) == 'Treatment'] <- 'treated'
 names(KIP)[names(KIP) == 'v11a'] <- 'note.deu' # Note Vorjahr deutsch
 names(KIP)[names(KIP) == 'v11b'] <- 'note.mat' # Note Vorjahr Mathe
 names(KIP)[names(KIP) == 'v11c'] <- 'note.mus' # Note Vorjahr Musik
-d <- KIP %>% select(school, pid, welle, lsat, treated, sat.friends, sat.class, classsit.prob, classsit.excl, female, note.deu, note.mat, note.mus)
+names(KIP)[names(KIP) == 'v01a'] <- 'hob.mus.making' # Hobby Musik machen
+names(KIP)[names(KIP) == 'v01b'] <- 'hob.mus.lis' # Hobby Musik hören
+names(KIP)[names(KIP) == 'v02d'] <- 'dauer.mus.lis' # Dauer Musik hören
+names(KIP)[names(KIP) == 'v02g'] <- 'dauer.mus.making' # Dauer Musikinstrument spielen
+names(KIP)[names(KIP) == 'v04a'] <- 'play.instr' # Musikalisch aktiv: Musikinsrument
+names(KIP)[names(KIP) == 'v04b'] <- 'orch' # Musikalisch aktiv im Orchester
+names(KIP)[names(KIP) == 'v04c'] <- 'choir' # Musikalisch aktiv im Chor
+names(KIP)[names(KIP) == 'v04o'] <- 'sonst' # Musikalisch aktiv: Sonstiges
+
+d <- KIP %>% select(school, pid, welle, lsat, treated, sat.friends, sat.class, classsit.prob, classsit.excl, female, note.deu, note.mat, note.mus, hob.mus.making, hob.mus.lis, dauer.mus.lis, dauer.mus.making, play.instr, orch, choir, sonst)
 d$school <- as.factor(d$school)
 d$pid <- as.factor(d$pid)
 d$treated <- as.factor(d$treated)
 d$welle <- as.factor(d$welle)
 d$female <- as.factor(d$female)
+d$mus.active = ifelse(d$play.instr==1 | d$orch==1 | d$choir==1 | d$sonst==1, 1, 0)
+
 
 # Dataframe nur für Welle 1 (pre-treatment)
 welle1 <- d %>% filter(welle==1) %>% 
-  select(school, pid, welle, lsat, treated, sat.friends, sat.class, classsit.prob, classsit.excl, female, note.deu, note.mat, note.mus)
+  select(school, pid, lsat, treated, sat.friends, sat.class, classsit.prob, classsit.excl, female, note.deu, note.mat, note.mus, hob.mus.making, hob.mus.lis, dauer.mus.lis, dauer.mus.making, play.instr, orch, choir, sonst, mus.active)
 
 d.p <- pdata.frame(d, index = c("pid", "welle"))
 
@@ -312,6 +323,10 @@ ggarrange(plot1, plot2, plot3, plot4, plot5, plot6,
                     ncol = 3, nrow = 2)
 cat(paste('}\n'))
 
+# Percentage of pre-treatment musically active students
+
+percent.mus.act <- welle1$mus.active/
+
 # Standardized mean differences
 vars <- c("lsat","female", "sat.friends", "sat.class", "classsit.prob", "classsit.excl", "note.deu", "note.mat", "note.mus")
 tableone <- CreateTableOne(vars = vars, strata = "treated", data = welle1, test = FALSE, includeNA = F)
@@ -319,7 +334,7 @@ smd <- print(tableone, smd = TRUE)
 kable(smd, format="latex")
 
 cat(paste('\\newcommand{\\smd}{\n', sep=''))
-kable(smd, format="latex",
+kable(smd, format="latex")
 cat(paste('}\n'))
 
 # print(smd, smd = TRUE)
